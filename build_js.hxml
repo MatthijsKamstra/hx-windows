@@ -12,7 +12,7 @@
 -main MainJS
 
 # JavaScript target
--js bin/main.js
+-js docs/main.js
 
 
 -D js-es=6
