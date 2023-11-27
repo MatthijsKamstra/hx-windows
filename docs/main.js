@@ -7,20 +7,22 @@ class MainJS {
 		this.sceneOffset = { x : 0.0, y : 0.0};
 		this.sceneOffsetTarget = { x : 0.0, y : 0.0};
 		let _gthis = this;
-		if(new URLSearchParams(window.location.search).get("clear") != null) {
-			window.localStorage.clear();
-		} else {
-			window.document.onvisibilitychange = function() {
-				if(window.document.visibilityState != "hidden" && !_gthis.initialized) {
-					_gthis.init();
-				}
-			};
-			window.onload = function() {
-				if(window.document.visibilityState != "hidden") {
-					_gthis.init();
-				}
-			};
-		}
+		window.document.addEventListener("DOMContentLoaded",function(event) {
+			if(new URLSearchParams(window.location.search).get("clear") != null) {
+				window.localStorage.clear();
+			} else {
+				window.document.onvisibilitychange = function() {
+					if(window.document.visibilityState != "hidden" && !_gthis.initialized) {
+						_gthis.init();
+					}
+				};
+				window.onload = function() {
+					if(window.document.visibilityState != "hidden") {
+						_gthis.init();
+					}
+				};
+			}
+		});
 	}
 	init() {
 		let now = new Date();
@@ -88,8 +90,8 @@ class MainJS {
 		this.windowManager.update();
 		let windowData = this.windowManager.getThisWindowData();
 		let div = window.document.getElementById("wrapper");
-		div.style.left = "-" + Std.string(windowData.shape.x) + "px";
-		div.style.top = "-" + Std.string(windowData.shape.y) + "px";
+		div.style.left = "" + windowData.shape.x * -1 + "px";
+		div.style.top = "" + windowData.shape.y * -1 + "px";
 		window.requestAnimationFrame($bind(this,this.render));
 	}
 	resize() {

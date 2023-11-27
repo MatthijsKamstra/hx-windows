@@ -21,22 +21,24 @@ class MainJS {
 	var internalTime:Float; // = getTime();
 
 	public function new() {
-		if (new URLSearchParams(window.location.search).get("clear") != null) {
-			window.localStorage.clear();
-		} else {
-			// this code is essential to circumvent that some browsers preload the content
-			// of some pages before you actually hit the url
-			document.onvisibilitychange = () -> {
-				if (document.visibilityState != VisibilityState.HIDDEN && !initialized) {
-					init();
-				}
-			};
-			window.onload = () -> {
-				if (document.visibilityState != VisibilityState.HIDDEN) {
-					init();
-				}
-			};
-		}
+		document.addEventListener("DOMContentLoaded", (event) -> {
+			if (new URLSearchParams(window.location.search).get("clear") != null) {
+				window.localStorage.clear();
+			} else {
+				// this code is essential to circumvent that some browsers preload the content
+				// of some pages before you actually hit the url
+				document.onvisibilitychange = () -> {
+					if (document.visibilityState != VisibilityState.HIDDEN && !initialized) {
+						init();
+					}
+				};
+				window.onload = () -> {
+					if (document.visibilityState != VisibilityState.HIDDEN) {
+						init();
+					}
+				};
+			}
+		});
 	}
 
 	function init() {
@@ -61,24 +63,6 @@ class MainJS {
 
 	function setupScene() {
 		console.log('setupScene');
-		// camera = new t.OrthographicCamera(0, 0, window.innerWidth, window.innerHeight, -10000, 10000);
-
-		// camera.position.z = 2.5;
-		// near = camera.position.z - .5;
-		// far = camera.position.z + 0.5;
-
-		// scene = new t.Scene();
-		// scene.background = new t.Color(0.0);
-		// scene.add(camera);
-
-		// renderer = new t.WebGLRenderer({antialias: true, depthBuffer: true});
-		// renderer.setPixelRatio(pixR);
-
-		// world = new t.Object3D();
-		// scene.add(world);
-
-		// renderer.domElement.setAttribute("id", "scene");
-		// document.body.appendChild(renderer.domElement);
 
 		var div = document.createDirectoryElement();
 		div.classList.add('container');
@@ -139,32 +123,7 @@ class MainJS {
 		// windowsUpdated();
 	}
 
-	function windowsUpdated() {
-		// updateNumberOfCubes();
-	}
-
-	//  function updateNumberOfCubes() {
-	// 	console.log('updateNumberOfCubes');
-	// 	var wins = windowManager.getWindows();
-	// 	// // remove all cubes
-	// 	// cubes.forEach((c) -> {
-	// 	// 	world.remove(c);
-	// 	// });
-	// 	// cubes = [];
-	// 	// // add new cubes based on the current window setup
-	// 	// for (i in 0...wins.length) {
-	// 	// 	// your code
-	// 	// 	var win = wins[i];
-	// 	// 	var c = new t.Color();
-	// 	// 	c.setHSL(i * .1, 1.0, .5);
-	// 	// 	var s = 100 + i * 50;
-	// 	// 	var cube = new t.Mesh(new t.BoxGeometry(s, s, s), new t.MeshBasicMaterial({color: c, wireframe: true}));
-	// 	// 	cube.position.x = win.shape.x + (win.shape.w * .5);
-	// 	// 	cube.position.y = win.shape.y + (win.shape.h * .5);
-	// 	// 	world.add(cube);
-	// 	// 	cubes.push(cube);
-	// 	// }
-	// }
+	function windowsUpdated() {}
 
 	function updateWindowShape(easing = true) {
 		console.log('updateWindowShape');
@@ -182,33 +141,6 @@ class MainJS {
 
 		windowManager.update();
 
-		// // calculate the new position based on the delta between current offset and new offset times a falloff value (to create the nice smoothing effect)
-		// var falloff = .05;
-		// sceneOffset.x = sceneOffset.x + ((sceneOffsetTarget.x - sceneOffset.x) * falloff);
-		// sceneOffset.y = sceneOffset.y + ((sceneOffsetTarget.y - sceneOffset.y) * falloff);
-
-		// // set the world position to the offset
-		// world.position.x = sceneOffset.x;
-		// world.position.y = sceneOffset.y;
-
-		// var wins = windowManager.getWindows();
-
-		// // loop through all our cubes and update their positions based on current window positions
-		// for (i in 0...cubes.length) {
-		// 	var cube = cubes[i];
-		// 	var win = wins[i];
-		// 	var _t = t; // + i * .2;
-
-		// 	var posTarget = {x: win.shape.x + (win.shape.w * .5), y: win.shape.y + (win.shape.h * .5)}
-
-		// 	cube.position.x = cube.position.x + (posTarget.x - cube.position.x) * falloff;
-		// 	cube.position.y = cube.position.y + (posTarget.y - cube.position.y) * falloff;
-		// 	cube.rotation.x = _t * .5;
-		// 	cube.rotation.y = _t * .3;
-		// };
-
-		// renderer.render(scene, camera);
-
 		// console.log('x');
 		// console.log(this.windowManager.getThisWindowID());
 		// console.log(this.windowManager.getThisWindowData());
@@ -217,8 +149,8 @@ class MainJS {
 
 		var div = document.getElementById('wrapper');
 		// console.info(div);
-		div.style.left = '-${windowData.shape.x}px';
-		div.style.top = '-${windowData.shape.y}px';
+		div.style.left = '${windowData.shape.x * -1}px';
+		div.style.top = '${windowData.shape.y*-1}px';
 
 		window.requestAnimationFrame(render);
 	}
@@ -228,10 +160,6 @@ class MainJS {
 		console.log('resize');
 		var width = window.innerWidth;
 		var height = window.innerHeight;
-
-		// camera = new t.OrthographicCamera(0, width, 0, height, -10000, 10000);
-		// camera.updateProjectionMatrix();
-		// renderer.setSize(width, height);
 	}
 
 	// ____________________________________ tools ____________________________________
